@@ -1,0 +1,37 @@
+pipeline{
+    agent any
+
+    environment {
+        RELEASE_VERSION='R.2'
+        VERSION = '0.1.0'
+    }
+
+        stages{
+                stage("Audit tools"){
+                    steps{
+                        sh '''
+                        git version
+                        java -version
+                        mvn -version
+                        '''
+                    }
+                }
+                stage("Unit Test"){
+                    steps{
+                        dir('./Maven_project'){
+                        sh '''
+                        echo "Executing unit tests..."
+                        sudo mvn test
+                        '''
+                        }
+                    }
+                }
+                stage("Build"){
+                    steps {
+                            echo "building version: ${VERSION} with suffix: ${RELEASE_VERSION}"
+                            echo 'Mention your application build code here!!!'
+                            sh 'sudo mvn -f Maven_project/pom.xml clean package'
+                        }
+                }
+            }
+            }
