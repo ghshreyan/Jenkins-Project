@@ -3,7 +3,7 @@ pipeline{
 
     environment {
         RELEASE_VERSION='R.2'
-        VERSION = '0.1.0'
+        VERSION = '1.1.0'
     }
 
         stages{
@@ -30,7 +30,13 @@ pipeline{
                     steps {
                             echo "building version: ${VERSION} with suffix: ${RELEASE_VERSION}"
                             echo 'Mention your application build code here!!!'
-                            sh 'sudo mvn -f Maven_project/pom.xml clean package'
+                            dir ('./Maven_project') {
+                            sh '''
+                            mvn versions:set -DnewVersion="${VERSION}" -SNAPSHOT
+                            mvn versions:update-child-modules
+                            mvn clean package
+                            '''
+                            }
                         }
                 }
             }
