@@ -12,6 +12,9 @@ pipeline{
                         sh '''
                         git version
                         java -version
+                        Sudo yum update
+                        sudo yum install -y default-jdk
+                        java -version
                         mvn -version
                         '''
                     }
