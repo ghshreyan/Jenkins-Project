@@ -32,7 +32,7 @@ pipeline{
                             echo 'Mention your application build code here!!!'
                             dir ('./Maven_project') {
                             sh '''
-                            mvn versions:set -DnewVersion="${VERSION}" -SNAPSHOT
+                            mvn versions:set -DnewVersion="${VERSION}"-SNAPSHOT
                             mvn versions:update-child-modules
                             mvn clean package
                             '''
