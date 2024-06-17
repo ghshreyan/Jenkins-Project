@@ -1,0 +1,80 @@
+pipeline{
+    agent any
+
+    parameters {
+      booleanParam(name: 'RELEASE', defaultValue: false, description: 'Is this a Release Candidate?')
+    }
+
+    environment {
+        RELEASE_VERSION='1.1.0'
+        INT_VERSION = 'R2'
+    }
+
+        stages{
+                stage("Audit tools"){
+                    steps{
+                       auditTools()
+                    }
+                }
+                stage("Unit Test"){
+                    steps{
+                        dir('./Maven_project'){
+                        sh '''
+                        echo "Executing unit tests..."
+                        sudo mvn test
+                        '''
+                        }
+                    }
+                }
+                stage("Build"){
+                    environment {
+                        VERSION_SUFFIX = getBuildVersion()
+                    }
+                    steps {
+                            echo "building version: ${INT_VERSION} with suffix: ${RELEASE_VERSION}"
+                            echo 'Mention your application build code here!!!'
+                            dir ('./Maven_project') {
+                              packageApplication()
+                            }
+                        }
+                }
+                stage("Publish") {
+                  when {
+                    expression { return params.RELEASE }
+                  }
+                  steps {
+                  archiveArtifacts('**/*.war')
+                }
+                }
+    post {
+      always {
+        cleanws()
+      }
+    }
+            }
+            }
+
+void auditTools() {
+  sh '''
+    git version
+    java -version
+    mvn -version
+     '''
+}
+
+String getBuildVersion() {
+  if (params.RELEASE) {
+    return env.RELEASE_VERSION + ':' + env.BUILD_NUMBER
+    }
+    else {
+      return env.INT_VERSION + '+ci:' + env.BUILD_NUMBER
+    }
+  }
+
+void packageApplication() {
+  sh '''
+       mvn versions:set -DnewVersion="${VERSION_SUFFIX}"-SNAPSHOT
+       mvn versions:update-child-modules
+       mvn clean package
+     '''
+}
