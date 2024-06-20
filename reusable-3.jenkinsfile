@@ -1,4 +1,4 @@
-pipeline{
+pipeline {
     agent any
 
     parameters {
@@ -10,15 +10,15 @@ pipeline{
         INT_VERSION = 'R2'
     }
 
-        stages{
-                stage("Audit tools"){
-                    steps{
+      stages {
+                stage("Audit tools") {
+                    steps {
                        auditTools()
                     }
                 }
-                stage("Unit Test"){
-                    steps{
-                        dir('./Maven_project'){
+                stage("Unit Test") {
+                    steps {
+                        dir('./Maven_project') {
                         sh '''
                         echo "Executing unit tests..."
                         sudo mvn test
@@ -26,7 +26,7 @@ pipeline{
                         }
                     }
                 }
-                stage("Build"){
+                stage("Build") {
                     environment {
                         VERSION_SUFFIX = getBuildVersion()
                     }
@@ -37,7 +37,7 @@ pipeline{
                               packageApplication()
                             }
                         }
-                }
+                 }
                 stage("Publish") {
                   when {
                     expression { return params.RELEASE }
@@ -45,14 +45,15 @@ pipeline{
                   steps {
                   archiveArtifacts('**/*.war')
                 }
-                }
+            }
+        }
     post {
       always {
         cleanws()
       }
     }
-            }
-            }
+}
+            
 
 void auditTools() {
   sh '''

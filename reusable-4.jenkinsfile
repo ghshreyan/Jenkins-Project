@@ -1,0 +1,35 @@
+library identifier: 'jenkins-shared-library@dev',
+  retriever: modernSCM([$class: 'GitSCMSource', remote: ''])
+
+  pipeline{
+      agent any
+      stages{
+          stage("Audit_tools"){
+              steps{
+                  auditTools()
+              }
+            //   post{
+            //       always{
+            //           echo "========always========"
+            //       }
+            //       success{
+            //           echo "========A executed successfully========"
+            //       }
+            //       failure{
+            //           echo "========A execution failed========"
+            //       }
+            //   }
+          }
+      }
+    //   post{
+    //       always{
+    //           echo "========always========"
+    //       }
+    //       success{
+    //           echo "========pipeline executed successfully ========"
+    //       }
+    //       failure{
+    //           echo "========pipeline execution failed========"
+    //       }
+    //   }
+  }
