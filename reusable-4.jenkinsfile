@@ -6,7 +6,7 @@ library identifier: 'jenkins-shared-library@dev',
       stages{
           stage("Audit_tools"){
               steps{
-                  auditTools()
+                  auditTools message: 'This is demo 2 from job 2'
               }
             //   post{
             //       always{
