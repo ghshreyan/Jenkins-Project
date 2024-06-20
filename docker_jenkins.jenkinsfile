@@ -27,7 +27,7 @@ pipeline{
                         dir('./Maven_project'){
                         sh '''
                         echo "Executing unit tests..."
-                        sudo mvn test
+                        mvn test
                         '''
                         }
                     }
